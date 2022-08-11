@@ -10,20 +10,21 @@ import readline from 'readline';
 // let input = readline.createInterface( process.stdin, process.stdout);
 
 const stop = "490008660N";
-let findStop = "https://api.tfl.gov.uk/StopPoint/" + stop;
+// let findStop = "https://api.tfl.gov.uk/StopPoint/" + stop;
+let findStop = 'https://api.tfl.gov.uk/StopPoint/Mode/bus'
 let findAllstops = "https://api.tfl.gov.uk/StopPoint/" + stop;
 
 function doQuery(url) {
-    const response = fetch(url)
+    return fetch(url)
         .then(response => response.json())
+        // return response
         .then(body => console.log(body));
 }
 
-doQuery(findStop);
+//Gets a distinct list of disrupted stop points for the given modes
 
-object.clidren
+let data = doQuery(findStop);
 
-consol.log()
-// console.log(response);
+// console.log(typeof data);
 
 
