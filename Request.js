@@ -10,15 +10,15 @@ import readline from 'readline';
 // let input = readline.createInterface( process.stdin, process.stdout);
 
 const stop = "490008660N";
-// let findStop = "https://api.tfl.gov.uk/StopPoint/" + stop;
-let findStop = 'https://api.tfl.gov.uk/StopPoint/Mode/bus'
+let findStop = 'https://api.tfl.gov.uk/StopPoint/Mode/bus/Disruption?includeRouteBlockedStops=false';
+// let findStop = 'https://api.tfl.gov.uk/StopPoint/Mode/bus'
 let findAllstops = "https://api.tfl.gov.uk/StopPoint/" + stop;
 
 function doQuery(url) {
     return fetch(url)
         .then(response => response.json())
         // return response
-        .then(body => console.log(body));
+        .then(body => console.log(body[atcoCode]));
 }
 
 //Gets a distinct list of disrupted stop points for the given modes
