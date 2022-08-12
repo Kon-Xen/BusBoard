@@ -19,9 +19,12 @@ import * as readline from 'readline';
      });
  }
 
+//--------------------------------------------------------------
+
 let postcode = 'HA8 6LJ';
 let coordinates = {};
-let buses = [];
+let arivalPredictions = [];
+
 //gets info of the given postcode.
 let coordinatesRequest = 'https://api.postcodes.io/postcodes/'+ postcode;
 const stopID = "490008660N";
@@ -32,16 +35,13 @@ let FindStops = "https://api.tfl.gov.uk/StopPoint/" + stopID;
 //Gets the list of arrival predictions for the given stop point id
 let findArrivals = "https://api.tfl.gov.uk/StopPoint/"+ stopID +"/Arrivals\n";
 
-let findStopsNearCoordinates = 'https://api.tfl.gov.uk/StopPoint/?lat='+coordinates.latitude +'&lon='+coordinates.longitude +'&stopTypes=NaptanPublicBusCoachTram';
-
-async function doQuery(url) {
+async function sendRequest(url) {
     const response = await fetch(url)
         .then(response => response.json())
         .then(data =>{return data});
         return response;
 }
-/lines 40 and 41 are the most important...  then line 64 or 65...
-// and then ....
+
 function setCoordinates(){
     coordinates = {
         longitude:postCodeData.result.longitude,
@@ -49,10 +49,10 @@ function setCoordinates(){
     }
 }
 
-function getArivals(data){
+function setArivalPredictions(data){
     for (const dataKey in data) {
         let bus = data[dataKey]
-        buses.push({
+        arivalPredictions.push({
             vehicleId: bus.vehicleId,
             lineName: bus.lineName,
             destinationName: bus.destinationName,
@@ -61,18 +61,25 @@ function getArivals(data){
     }
 }
 
-let LTdata = await doQuery(findArrivals);
-let postCodeData = await doQuery(coordinatesRequest);
-// you need to use await
-//yes ?
-// ill push now to my branch
+
+let LTdata = await sendRequest(findArrivals);
+let postCodeData = await sendRequest(coordinatesRequest);
+
 setCoordinates();
 
-let stopsNearCoordinates = await doQuery(findStopsNearCoordinates);
+let findStopsNearCoordinates = 'https://api.tfl.gov.uk/StopPoint/?lat='+coordinates.latitude +'&lon='+ coordinates.longitude +'&stopTypes=NaptanPublicBusCoachTram';
+let stopsNearCoordinates = await sendRequest(findStopsNearCoordinates);
 
+console.log('stops near ' + postcode + ': ');
+// Gets a list of bus stops close to give coordinates... I think
 console.log(findStopsNearCoordinates);
 console.log(stopsNearCoordinates);
 
-// getArivals(LTdata);
-// console.log(buses);
+setArivalPredictions(LTdata);
+console.log('Predictions :')
+console.log(arivalPredictions);
 
+let journeyPlannerRequest ='https://api.tfl.gov.uk/Journey/JourneyResults/' + postcode + '/to/N129HJ';
+let journeyPlanner = await sendRequest(journeyPlannerRequest);
+console.log('journey planner: ');
+console.log(journeyPlanner);
