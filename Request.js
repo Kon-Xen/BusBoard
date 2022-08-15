@@ -42,12 +42,14 @@ async function sendRequest(url) {
         return response;
 }
 
+
 function setCoordinates(){
     coordinates = {
         longitude:postCodeData.result.longitude,
         latitude: postCodeData.result.latitude
     }
 }
+
 
 function setArivalPredictions(data){
     for (const dataKey in data) {
@@ -83,3 +85,19 @@ let journeyPlannerRequest ='https://api.tfl.gov.uk/Journey/JourneyResults/' + po
 let journeyPlanner = await sendRequest(journeyPlannerRequest);
 console.log('journey planner: ');
 console.log(journeyPlanner);
+
+// catch postcode error
+
+// post code to have 6 at least characters ht16P\O.
+// or have 7 characters ( 4th to be a space)
+
+// Could divide postcode in to 2 3 letter chunks and see if the chunks are LLN and NLL (L = letter N = Number.)
+
+// Make sure is all capitalised :  turn the string in to caps first ?
+
+// First 2 characters  to be letters 3rd to be number 4th space OR number if the next 2 are letters
+// if 4th is space then 5th to be a number 6th and 7th to be letters
+
+// then pass it to the postcode api to check if is a real postcode.
+// or !
+// even easier just take the input and then send it straight to the postcode API and check what it returns.
