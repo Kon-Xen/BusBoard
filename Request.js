@@ -3,55 +3,57 @@
 
 import fetch from 'node-fetch';
 import * as readline from 'readline';
+import readlinesync from 'readline-sync';
 
-//todo
-
-//  const reader = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-// });
-
-
- function getIdFromCLI(){
-     readline.question(`enter id`, id => {
-         console.log(`you enterd ${ id }!`);
-         readline.close();
-     });
- }
-
-//--------------------------------------------------------------
-
-let postcode = 'HA8 6LJ';
+let postCodeData = {};
+// let postcode = readlinesync.question('enter postCode : ');
+// console.log(postcode);
 let coordinates = {};
 let arivalPredictions = [];
+let postcode;
+const stopID = "490008660N";
+
+let expression = '/([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\\s?[0-9][A-Za-z]{2})/g'
+do {
+    try {
+        postcode = readlinesync.question('enter postCode : ');
+        postCodeData = await sendRequest(`https://api.postcodes.io/postcodes/${postcode}`);
+        if (postCodeData.status === 404) throw "Invalid post code";
+    } catch (err) {
+        console.log(err);
+    }
+} while (postCodeData.status === 404);
+
 
 //gets info of the given postcode.
-let coordinatesRequest = 'https://api.postcodes.io/postcodes/'+ postcode;
-const stopID = "490008660N";
-let findStop = 'https://api.tfl.gov.uk/StopPoint/Mode/bus'
+// let coordinatesRequest = 'https://api.postcodes.io/postcodes/' + postcode;
+
+let findStopRequest = 'https://api.tfl.gov.uk/StopPoint/Mode/bus'
 
 let FindStops = "https://api.tfl.gov.uk/StopPoint/" + stopID;
 
 //Gets the list of arrival predictions for the given stop point id
-let findArrivals = "https://api.tfl.gov.uk/StopPoint/"+ stopID +"/Arrivals\n";
+let findArrivals = "https://api.tfl.gov.uk/StopPoint/" + stopID + "/Arrivals\n";
 
 async function sendRequest(url) {
     const response = await fetch(url)
         .then(response => response.json())
-        .then(data =>{return data});
-        return response;
+        .then(data => {
+            return data
+        });
+    return response;
 }
 
 
-function setCoordinates(){
+function setCoordinates() {
     coordinates = {
-        longitude:postCodeData.result.longitude,
+        longitude: postCodeData.result.longitude,
         latitude: postCodeData.result.latitude
     }
 }
 
 
-function setArivalPredictions(data){
+function setArivalPredictions(data) {
     for (const dataKey in data) {
         let bus = data[dataKey]
         arivalPredictions.push({
@@ -64,40 +66,39 @@ function setArivalPredictions(data){
 }
 
 
-let LTdata = await sendRequest(findArrivals);
-let postCodeData = await sendRequest(coordinatesRequest);
+// let LTdata = await sendRequest(findArrivals);
+// let postCodeData = await sendRequest(coordinatesRequest);
 
 setCoordinates();
+// console.log(coordinates);
 
-let findStopsNearCoordinates = 'https://api.tfl.gov.uk/StopPoint/?lat='+coordinates.latitude +'&lon='+ coordinates.longitude +'&stopTypes=NaptanPublicBusCoachTram';
-let stopsNearCoordinates = await sendRequest(findStopsNearCoordinates);
+let findStopsNearCoordinates = 'https://api.tfl.gov.uk/StopPoint/?lat=' + coordinates.latitude + '&lon=' + coordinates.longitude + '&stopTypes=NaptanPublicBusCoachTram';
 
-console.log('stops near ' + postcode + ': ');
+try {
+    let stopsNearCoordinates = await sendRequest(findStopsNearCoordinates);
+    //run it as != to get an error.
+    if (stopsNearCoordinates.length === 0) throw "NO bus stops at given post code";
+} catch (err) {
+    console.log(err);
+}
+
+// console.log('stops near ' + postcode + ': ');
 // Gets a list of bus stops close to give coordinates... I think
-console.log(findStopsNearCoordinates);
-console.log(stopsNearCoordinates);
+// console.log(findStopsNearCoordinates);
+// console.log(stopsNearCoordinates);
 
-setArivalPredictions(LTdata);
-console.log('Predictions :')
-console.log(arivalPredictions);
+// setArivalPredictions(LTdata);
+// console.log('Predictions :')
+// console.log(arivalPredictions);
 
-let journeyPlannerRequest ='https://api.tfl.gov.uk/Journey/JourneyResults/' + postcode + '/to/N129HJ';
-let journeyPlanner = await sendRequest(journeyPlannerRequest);
-console.log('journey planner: ');
-console.log(journeyPlanner);
+let journeyPlannerRequest = 'https://api.tfl.gov.uk/Journey/JourneyResults/' + postcode + '/to/se114np';
+try {
+    let journeyPlanner = await sendRequest(journeyPlannerRequest);
+    //run it as != to get an error.
+    if (journeyPlanner.length != 0) throw "NO buses to from this postcode to...";
+} catch (err) {
+    console.log(err);
+}
 
-// catch postcode error
-
-// post code to have 6 at least characters ht16P\O.
-// or have 7 characters ( 4th to be a space)
-
-// Could divide postcode in to 2 3 letter chunks and see if the chunks are LLN and NLL (L = letter N = Number.)
-
-// Make sure is all capitalised :  turn the string in to caps first ?
-
-// First 2 characters  to be letters 3rd to be number 4th space OR number if the next 2 are letters
-// if 4th is space then 5th to be a number 6th and 7th to be letters
-
-// then pass it to the postcode api to check if is a real postcode.
-// or !
-// even easier just take the input and then send it straight to the postcode API and check what it returns.
+// console.log('journey planner: ');
+// console.log(journeyPlanner);
