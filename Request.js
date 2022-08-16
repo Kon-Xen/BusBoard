@@ -6,14 +6,12 @@ import * as readline from 'readline';
 import readlinesync from 'readline-sync';
 
 let postCodeData = {};
-// let postcode = readlinesync.question('enter postCode : ');
-// console.log(postcode);
+
 let coordinates = {};
 let arivalPredictions = [];
 let postcode;
 const stopID = "490008660N";
 
-let expression = '/([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\\s?[0-9][A-Za-z]{2})/g'
 do {
     try {
         postcode = readlinesync.question('enter postCode : ');
@@ -91,14 +89,7 @@ try {
 // console.log('Predictions :')
 // console.log(arivalPredictions);
 
-let journeyPlannerRequest = 'https://api.tfl.gov.uk/Journey/JourneyResults/' + postcode + '/to/se114np';
-try {
-    let journeyPlanner = await sendRequest(journeyPlannerRequest);
-    //run it as != to get an error.
-    if (journeyPlanner.length != 0) throw "NO buses to from this postcode to...";
-} catch (err) {
-    console.log(err);
-}
+
 
 // console.log('journey planner: ');
 // console.log(journeyPlanner);
