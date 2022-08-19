@@ -16,8 +16,8 @@ setCoordinates(postCodeData.result);
 switch (option) {
     case '1':
         let allNearestBusStops = await busBoardApi.getNearestBusStops(coordinates);
+        // console.log(allNearestBusStops);
         nearestBusStops = findClosest(allNearestBusStops);
-
         userInterface.renderNearestBusStops(nearestBusStops);
         //todo ask for direction to the stops ....1
         break;
@@ -50,22 +50,22 @@ function setCoordinates(data) {
 }
 
 function findClosest(busStops){
-    let prevStop = busStops[0];
-    let closest = [];
-
-    for(let i=1; i<=busStops.length;i++){
-        if( busStops[i].distance > prevStop.distance ){
-            closest.push(busStops[i]);
-        }
-        console.log(busStops[i]);
-        prevStop = busStops[i];
-    }
-
-    // for(let stop in busStops){
-    // busStops.item.distance
-    // }
-    return closest;
+    return busStops.sort((a,b)=>{compare(a,b)});
 }
 
+function compare(a,b) {
+    // Use toUpperCase() to ignore character casing
+    console.log(a);
+    const stopPointA = a.distance;
 
+    const stopPointB = b.distance;
+
+    let comparison = 0;
+    if (stopPointA > stopPointB) {
+        comparison = 1;
+    } else if (stopPointA < stopPointB) {
+        comparison = -1;
+    }
+    return comparison;
+}1
 // c) provide a list of a bus's upcoming stops (and estimated times?)
