@@ -16,8 +16,8 @@ async function runBusBoard() {
 
     switch (menuOption) {
         case '1':
-            let stops = await findNearest2BusStops();
-            userInterface.renderNearestBusStops(stops,postCode);
+            let stops = await nearest2BusStops();
+
             break;
         case '2':
             console.log('From');
@@ -48,12 +48,12 @@ async function runBusBoard() {
         }
     }
 
-    async function findNearest2BusStops() {
+    async function nearest2BusStops() {
 
         let busStops = await StopPointClient.getNearestBusStops(coordinates.longitude, coordinates.latitude);
         let arrayOfBusStops = Object.entries(busStops.stopPoints);
 
-        return [arrayOfBusStops[0],arrayOfBusStops[1]];
+        return [arrayOfBusStops[0][1], arrayOfBusStops[1][1]];
 
         //todo ask for direction to the stops ....1
     }

@@ -23,20 +23,30 @@ class UserInterface {
         }
     }
 
-    renderNearestBusStops(busStops, postcode) {
+    renderNearestBusStops(stops, postcode) {
+        console.log('');
+        console.log('****** Nearest stops near' + postcode + ' ******');
+        console.log('');
+        let counter = 1;
+        for (let index in stops) {
+            let stop = stops[index];
 
-        // busStops.forEach(function (stop, index, arr) {
-        //     console.log(`Name: ${stop.commonName}`);
-        //     console.log(`distance from ' + postcode: ${postcode} : ${stop.distance}`);
-        // });
+            console.log('****** Stop ' + counter);
+            console.log('name:' + stop.commonName + ' letter: ' + stop.stopLetter);
+            console.log('distance: ' + Math.round(stop.distance) + 'm');
 
-        for (let object in busStops){
-            let stop = busStops[object];
-            console.log(stop);
-            console.log('-------------------------');
-            console.log('name:' + stop.commonName);
-            console.log('distance from ' + postcode + ' : ' +  Math.round(stop.distance));
-            console.log('-------------------------');
+            console.log('* available services *');
+            if (stop.modes.length > 0) {//todo "do I really need that?"
+                for (let index in stop.modes) {
+                    console.log('types: ' + stop.modes[index]);
+                }
+            }
+            for (let index in stop.lines) {
+                console.log('line: ' + stop.lines[index].name);
+            }
+
+            console.log('');
+            counter += 1;
         }
     }
 
@@ -83,6 +93,26 @@ class UserInterface {
         while (postCodeCheck.status === 404);
 
         return postCode;
+    }
+
+    askForJourney() {
+        let journey;
+        let choice;
+        do {
+            try {
+                choice = readlinesync.question('do you wish for directions to the buss stop ? (y/n): ');
+                if (choice === 'y') {
+                    // do boogie
+                }
+
+                if (postCodeCheck.status === 404) throw "Did you enter y or n ? ";
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        while (postCodeCheck.status === 404);
+
+        return choice;
     }
 
 }
