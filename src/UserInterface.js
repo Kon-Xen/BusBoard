@@ -23,8 +23,21 @@ class UserInterface {
         }
     }
 
-    renderNearestBusStops(busStops) {
-        console.log(busStops);
+    renderNearestBusStops(busStops, postcode) {
+
+        // busStops.forEach(function (stop, index, arr) {
+        //     console.log(`Name: ${stop.commonName}`);
+        //     console.log(`distance from ' + postcode: ${postcode} : ${stop.distance}`);
+        // });
+
+        for (let object in busStops){
+            let stop = busStops[object];
+            console.log(stop);
+            console.log('-------------------------');
+            console.log('name:' + stop.commonName);
+            console.log('distance from ' + postcode + ' : ' +  Math.round(stop.distance));
+            console.log('-------------------------');
+        }
     }
 
     renderJourney(journey) {
@@ -35,7 +48,7 @@ class UserInterface {
         console.log(disruptions);
     }
 
-    askForOption() {
+    getMenuOption() {
         let isSet = null;
 
         console.log('Please enter option: ');
