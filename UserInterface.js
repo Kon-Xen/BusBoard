@@ -1,5 +1,5 @@
 import readlinesync from "readline-sync";
-import busBoardApi from "./BusBoardApi.js";
+import StopPointClient from "./StopPointClient.js";
 
 class UserInterface {
 
@@ -52,8 +52,6 @@ class UserInterface {
                 isSet = 1;
             }
         }
-
-        // console.log(`You selected ${this.userInput}`);
         return this.userInput;
     }
 
@@ -63,7 +61,7 @@ class UserInterface {
         do {
             try {
                 postCode = readlinesync.question('enter postCode: ');
-                postCodeCheck = busBoardApi.sendRequest('https://api.postcodes.io/postcodes/' + postCode);
+                postCodeCheck = StopPointClient.sendRequest('https://api.postcodes.io/postcodes/' + postCode);
                 if (postCodeCheck.status === 404) throw "Invalid post code";
             } catch (err) {
                 console.log(err);

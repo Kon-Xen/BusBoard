@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 
 
-class BusBoardApi {
+class StopPointClient {
 
     async sendRequest(url) {
         const response = await fetch(url)
@@ -12,35 +12,40 @@ class BusBoardApi {
         return response;
     }
 
+
     getPostcodeData(postCode) {
         let postCodeData;
         try {
-            postCodeData = this.sendRequest('https://api.postcodes.io/postcodes/' + postCode);
+            postCodeData = this.sendRequest(`https://api.postcodes.io/postcodes/${postCode}`);
             if (postCodeData.status === 404) throw "Invalid post code";
         } catch (err) {
             console.log(err);
-            //todo logg the error to a file;
         }
         return postCodeData;
     }
 
-    getNearestBusStops(coordinates) {
+
+    getNearestBusStops(longitude,latitude) {
+        let busStopsNearCoordinatesQuery = `https://api.tfl.gov.uk/StopPoint/?lat=${latitude}&lon=${longitude}&stopTypes=NaptanPublicBusCoachTram`;
         let busStopsNearCoordinates;
-        let busStopsNearCoordinatesQuery = 'https://api.tfl.gov.uk/StopPoint/?lat=' + coordinates.latitude + '&lon=' + coordinates.longitude + '&stopTypes=NaptanPublicBusCoachTram';
+
         try {
             busStopsNearCoordinates = this.sendRequest(busStopsNearCoordinatesQuery);
             if (busStopsNearCoordinates.length === 0) throw "NO bus stops at given post code";
         } catch (err) {
             console.log(err);
+            //todo log to a file?
         }
 
         return busStopsNearCoordinates;
     }
 
+
     getJourney(postCodeA, postCodeB) {
         let journey;
+
         try {
-            journey = this.sendRequest('https://api.tfl.gov.uk/Journey/JourneyResults/' + postCodeA + '/to/' + postCodeB);
+            journey = this.sendRequest(`https://api.tfl.gov.uk/Journey/JourneyResults/${postCodeA}/to/${postCodeB}`);
 
             if (journey.length === 0) throw "NO buses to from this postcode to...";
         } catch (err) {
@@ -49,8 +54,10 @@ class BusBoardApi {
         return journey;
     }
 
+
     getDisruptedStopPoints(modes) {
         let disruptions;
+
         try {
             disruptions = this.sendRequest(`https://api.tfl.gov.uk/StopPoint/Mode/${modes}/Disruption?includeRouteBlockedStops`);
 
@@ -60,8 +67,6 @@ class BusBoardApi {
         }
         return disruptions;
     }
-
-
 }
 
-export default new BusBoardApi();
+export default new StopPointClient();

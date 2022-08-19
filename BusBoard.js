@@ -1,5 +1,5 @@
 import userInterface from "./UserInterface.js";
-import busBoardApi from "./BusBoardApi.js";
+import StopPointClient from "./StopPointClient.js";
 
 let coordinates = {};
 let nearestBusStops = {};
@@ -9,13 +9,13 @@ userInterface.renderMenu(userInterface.masterMenu);
 let option = userInterface.askForOption();
 let postCode = userInterface.askForPostCode();
 
-let postCodeData = await busBoardApi.getPostcodeData(postCode);
+let postCodeData = await StopPointClient.getPostcodeData(postCode);
 setCoordinates(postCodeData.result);
 
 
 switch (option) {
     case '1':
-        let allNearestBusStops = await busBoardApi.getNearestBusStops(coordinates);
+        let allNearestBusStops = await StopPointClient.getNearestBusStops(coordinates.longitude,coordinates.latitude);
         // console.log(allNearestBusStops);
         nearestBusStops = findClosest(allNearestBusStops);
         userInterface.renderNearestBusStops(nearestBusStops);
@@ -26,12 +26,12 @@ switch (option) {
         let postCodeA = userInterface.askForPostCode();
         console.log('To');
         let postCodeB = userInterface.askForPostCode();
-        let journey = await busBoardApi.getJourney(postCodeA, postCodeB);
+        let journey = await StopPointClient.getJourney(postCodeA, postCodeB);
         userInterface.renderJourney(journey);
         break;
     case '3':
         let modes = 'bus,dlr';
-        let disruptions = busBoardApi.getDisruptedStopPoints(modes);
+        let disruptions = StopPointClient.getDisruptedStopPoints(modes);
         userInterface.renderDisruptions;
         break;
     case '4':
