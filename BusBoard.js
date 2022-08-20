@@ -3,17 +3,9 @@ import StopPointClient from "./src/StopPointClient.js";
 import UserInterface from "./src/UserInterface.js";
 
 async function runBusBoard() {
-    let coordinates = {};
-    let nearestBusStops = {};
 
     userInterface.renderMenu(userInterface.masterMenu);
-
     let menuOption = userInterface.getMenuOption();
-    let postCode = userInterface.askForPostCode();
-
-    let postCodeData = await StopPointClient.getPostcodeData(postCode);
-    setCoordinates(postCodeData.result);
-
 
     switch (menuOption) {
         case '1':
@@ -27,17 +19,18 @@ async function runBusBoard() {
             break;
     }
 
-    function setCoordinates(data) {
-
-        coordinates = {
-            longitude: data.longitude,
-            latitude: data.latitude
-        }
-    }
-
     async function nearest2BusStops() {
 
-        let busStops = await StopPointClient.getNearestBusStops(coordinates.longitude, coordinates.latitude);
+        let postCode = userInterface.askForPostCode();
+        let postCodeData = await StopPointClient.getPostcodeData(postCode);
+
+        let coords = {
+            lon: postCodeData.result.longitude,
+            lat: postCodeData.result.latitude
+        }
+
+        let busStops = await StopPointClient.getNearestBusStops(coords.lon, coords.lat);
+
         let arrayOfBusStops = Object.entries(busStops.stopPoints);
         let stops = [arrayOfBusStops[0][1], arrayOfBusStops[1][1]];
 
@@ -54,20 +47,25 @@ async function runBusBoard() {
         }
     }
 
-    async function planJourney(){
+    async function planJourney() {
+        //todo make a menu for it in the UI
+        //todo display the data properly
         console.log('From');
         let from = userInterface.askForPostCode();
         console.log('To');
         let to = userInterface.askForPostCode();
-        let journey = await StopPointClient.getJourney(postCodeA, postCodeB);
+        let journey = await StopPointClient.getJourney(from, to);
         userInterface.renderJourney(journey);
     }
 
-    async function checkForDisruptions(){
-        let modes = 'bus,dlr';
-        let disruptionsList = StopPointClient.getDisruptedStopPoints(modes);
+    async function checkForDisruptions() {
+        //todo menu for modes?
+        let modes = ['bus'];
+        let disruptionsList = await StopPointClient.getDisruptedStopPoints(modes);
         userInterface.renderDisruptions(disruptionsList);
     }
+
+
 }
 
 runBusBoard();

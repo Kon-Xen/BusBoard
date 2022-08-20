@@ -12,8 +12,6 @@ class UserInterface {
         '3. Check for any disruptions'
     ];
 
-    subMenu = ['Show journey to the bus stops ? y/n'];
-
     userInput = null;
 
     renderMenu(menu) {
