@@ -60,6 +60,7 @@ async function runBusBoard() {
 
     async function checkForDisruptions() {
         //todo menu for modes?
+        //todo display data properly!
         let modes = ["bus"];
         let disruptionsList = await StopPointClient.getDisruptedStopPoints(modes);
         userInterface.renderDisruptions(disruptionsList);
