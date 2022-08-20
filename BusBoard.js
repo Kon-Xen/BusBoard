@@ -20,23 +20,10 @@ async function runBusBoard() {
             await nearest2BusStops();
             break;
         case '2':
-            console.log('From');
-            let from = userInterface.askForPostCode();
-            console.log('To');
-            let to = userInterface.askForPostCode();
-            let journey = await StopPointClient.getJourney(postCodeA, postCodeB);
-            userInterface.renderJourney(journey);
+            await planJourney();
             break;
         case '3':
-            let modes = 'bus,dlr';
-            let disruptions = StopPointClient.getDisruptedStopPoints(modes);
-            userInterface.renderDisruptions;
-            break;
-        case '4':
-            //do something
-            break;
-        case '5':
-            //do something
+            await checkForDisruptions();
             break;
     }
 
@@ -67,29 +54,20 @@ async function runBusBoard() {
         }
     }
 
+    async function planJourney(){
+        console.log('From');
+        let from = userInterface.askForPostCode();
+        console.log('To');
+        let to = userInterface.askForPostCode();
+        let journey = await StopPointClient.getJourney(postCodeA, postCodeB);
+        userInterface.renderJourney(journey);
+    }
 
-    // function sortBussStops(busStops) {
-    //     return busStops.sort((a, b) => {
-    //         compare(a, b)
-    //     });
-    // }
-    //
-    // function compare(a, b) {
-    //
-    //     console.log(a);
-    //     const stopPointA = a.distance;
-    //     const stopPointB = b.distance;
-    //
-    //     let comparison = 0;
-    //     if (stopPointA > stopPointB) {
-    //         comparison = 1;
-    //     } else if (stopPointA < stopPointB) {
-    //         comparison = -1;
-    //     }
-    //     return comparison;
-    // }
-
-    // c) provide a list of a bus's upcoming stops (and estimated times?)
+    async function checkForDisruptions(){
+        let modes = 'bus,dlr';
+        let disruptionsList = StopPointClient.getDisruptedStopPoints(modes);
+        userInterface.renderDisruptions(disruptionsList);
+    }
 }
 
 runBusBoard();
