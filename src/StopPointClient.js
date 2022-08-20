@@ -59,7 +59,7 @@ class StopPointClient {
         let disruptions;
 
         try {
-            disruptions = this.sendRequest(`https://api.tfl.gov.uk/StopPoint/Mode/${modes}/Disruption?includeRouteBlockedStops`);
+            disruptions = this.sendRequest(`https://api.tfl.gov.uk/StopPoint/Mode/${modes}/Disruption`);
 
             if (disruptions.length === 0) throw "NO disruptions";
         } catch (err) {
