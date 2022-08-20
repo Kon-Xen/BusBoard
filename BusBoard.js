@@ -21,9 +21,9 @@ async function runBusBoard() {
             break;
         case '2':
             console.log('From');
-            let postCodeA = userInterface.askForPostCode();
+            let from = userInterface.askForPostCode();
             console.log('To');
-            let postCodeB = userInterface.askForPostCode();
+            let to = userInterface.askForPostCode();
             let journey = await StopPointClient.getJourney(postCodeA, postCodeB);
             userInterface.renderJourney(journey);
             break;
