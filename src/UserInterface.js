@@ -50,6 +50,20 @@ class UserInterface {
         }
     }
 
+    renderJourneysToStops(journeys,stops){
+        for (let index in journeys) {
+            let journey=journeys[index];
+            console.log('');
+            console.log('*');
+            console.log('directions to : ' + stops[index].commonName);
+            console.log('estimated time: ' + journey.journeys[0].duration + 'mins');
+            console.log('estimated arrival: ' + journey.journeys[0].arrivalDateTime);
+            console.log('directions: ');
+            console.log(journey.journeys[0].legs[0].instruction.detailed);
+            console.log('*');
+        }
+    }
+
     renderJourney(journey) {
         console.log(journey);
     }
@@ -95,26 +109,17 @@ class UserInterface {
         return postCode;
     }
 
-    askForJourney() {
-        let journey;
+    askForDirections() {
+        let isSet = null;
         let choice;
-        do {
-            try {
-                choice = readlinesync.question('do you wish for directions to the buss stop ? (y/n): ');
-                if (choice === 'y') {
-                    // do boogie
-                }
+        let errorMessage = "Sorry didn't get that.. Did you enter y or n ?";
 
-                if (postCodeCheck.status === 404) throw "Did you enter y or n ? ";
-            } catch (err) {
-                console.log(err);
-            }
+        while (isSet === null) {
+            choice = readlinesync.question('do you wish for directions to the buss stops ? (y/n): ').toUpperCase();
+            choice === 'Y' || choice === 'N' ? isSet = 1 : console.log(errorMessage);
         }
-        while (postCodeCheck.status === 404);
-
-        return choice;
+        return this.userInput = choice;
     }
-
 }
 
 export default new UserInterface();

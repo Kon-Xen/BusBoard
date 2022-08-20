@@ -1,5 +1,6 @@
 import userInterface from "./src/UserInterface.js";
 import StopPointClient from "./src/StopPointClient.js";
+import UserInterface from "./src/UserInterface.js";
 
 async function runBusBoard() {
     let coordinates = {};
@@ -16,8 +17,7 @@ async function runBusBoard() {
 
     switch (menuOption) {
         case '1':
-            let stops = await nearest2BusStops();
-
+            await nearest2BusStops();
             break;
         case '2':
             console.log('From');
@@ -52,11 +52,29 @@ async function runBusBoard() {
 
         let busStops = await StopPointClient.getNearestBusStops(coordinates.longitude, coordinates.latitude);
         let arrayOfBusStops = Object.entries(busStops.stopPoints);
+        let stops = [arrayOfBusStops[0][1], arrayOfBusStops[1][1]];
 
-        return [arrayOfBusStops[0][1], arrayOfBusStops[1][1]];
 
-        //todo ask for direction to the stops ....1
+        UserInterface.renderNearestBusStops(stops, postCode);
+
+        let showDirections = UserInterface.askForDirections();
+
+        if (showDirections === 'Y') {
+
+            let journeys = [
+                await StopPointClient.getJourney(postCode, stops[0].id),
+                await StopPointClient.getJourney(postCode, stops[1].id)
+            ];
+
+            userInterface.renderJourneysToStops(journeys,stops);
+            // console.log('estimated time: ' +journeyA.journeys[0].duration + 'mins');
+            // console.log('estimated arrival: ' + journeyA.journeys[0].arrivalDateTime);
+            // console.log('directions: ');
+            // console.log(journeyA.journeys[0].legs[0].instruction.detailed);
+
+        }
     }
+
 
     function sortBussStops(busStops) {
         return busStops.sort((a, b) => {

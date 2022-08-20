@@ -41,13 +41,13 @@ class StopPointClient {
     }
 
 
-    getJourney(postCodeA, postCodeB) {
+    getJourney(from, to) {
         let journey;
 
         try {
-            journey = this.sendRequest(`https://api.tfl.gov.uk/Journey/JourneyResults/${postCodeA}/to/${postCodeB}`);
+            journey = this.sendRequest(`https://api.tfl.gov.uk/Journey/JourneyResults/${from}/to/${to}`);
 
-            if (journey.length === 0) throw "NO buses to from this postcode to...";
+            if (journey.length === 0) throw "say what?! ";
         } catch (err) {
             console.log(err);
         }
