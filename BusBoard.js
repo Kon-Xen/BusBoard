@@ -54,49 +54,40 @@ async function runBusBoard() {
         let arrayOfBusStops = Object.entries(busStops.stopPoints);
         let stops = [arrayOfBusStops[0][1], arrayOfBusStops[1][1]];
 
-
         UserInterface.renderNearestBusStops(stops, postCode);
 
         let showDirections = UserInterface.askForDirections();
 
         if (showDirections === 'Y') {
-
             let journeys = [
                 await StopPointClient.getJourney(postCode, stops[0].id),
                 await StopPointClient.getJourney(postCode, stops[1].id)
             ];
-
-            userInterface.renderJourneysToStops(journeys,stops);
-            // console.log('estimated time: ' +journeyA.journeys[0].duration + 'mins');
-            // console.log('estimated arrival: ' + journeyA.journeys[0].arrivalDateTime);
-            // console.log('directions: ');
-            // console.log(journeyA.journeys[0].legs[0].instruction.detailed);
-
+            userInterface.renderJourneysToStops(journeys, stops);
         }
     }
 
 
-    function sortBussStops(busStops) {
-        return busStops.sort((a, b) => {
-            compare(a, b)
-        });
-    }
-
-    function compare(a, b) {
-
-        console.log(a);
-        const stopPointA = a.distance;
-
-        const stopPointB = b.distance;
-
-        let comparison = 0;
-        if (stopPointA > stopPointB) {
-            comparison = 1;
-        } else if (stopPointA < stopPointB) {
-            comparison = -1;
-        }
-        return comparison;
-    }
+    // function sortBussStops(busStops) {
+    //     return busStops.sort((a, b) => {
+    //         compare(a, b)
+    //     });
+    // }
+    //
+    // function compare(a, b) {
+    //
+    //     console.log(a);
+    //     const stopPointA = a.distance;
+    //     const stopPointB = b.distance;
+    //
+    //     let comparison = 0;
+    //     if (stopPointA > stopPointB) {
+    //         comparison = 1;
+    //     } else if (stopPointA < stopPointB) {
+    //         comparison = -1;
+    //     }
+    //     return comparison;
+    // }
 
     // c) provide a list of a bus's upcoming stops (and estimated times?)
 }

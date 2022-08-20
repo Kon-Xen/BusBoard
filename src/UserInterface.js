@@ -8,9 +8,9 @@ class UserInterface {
         ' ',
         '****** Options',
         '1. Find nearest 2 bus stops',
-        '2. Plan a journey to any postcode in London',
-        '3. list disrupted stop points for the given modes',
-        '4. A list of a bus\'s upcoming stops (and estimated times?)'
+        '2. check for any distruptions',
+        "3 .provide a list of a bus's upcoming stops (and estimated times?)",
+        '4. Plan a journey to any postcode in London'
     ];
 
     subMenu = ['Show journey to the bus stops ? y/n'];
