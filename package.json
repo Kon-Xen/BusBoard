@@ -2,8 +2,15 @@
   "name": "BusBoard",
   "type": "module",
   "version": "1.0.0",
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "node-fetch": "^3.2.10",
     "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "jest": "^28.1.3"
   }
+
 }
